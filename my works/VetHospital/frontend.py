@@ -1,7 +1,9 @@
 from tkinter import *
 import backend
 
+# Getting required rows from the database
 def get_selected_row(event):
+    # Try and Catch used to fix OutOfIndexError
     try:
         global selected_tuple
         index = list1.curselection()[0]
@@ -25,31 +27,50 @@ def get_selected_row(event):
     except IndexError:
         pass
     
+# To clear all the input boxes and the window for viewing database contents
+def clear_command():
+    for entry in backend.view():
+        list1.delete(0, END)
+    e1.delete(0, END)
+    e2.delete(0, END)
+    e3.delete(0, END)
+    e4.delete(0, END)
+    e5.delete(0, END)
+    e6.delete(0, END)
+    e7.delete(0, END)
+    e8.delete(0, END)
+
+# To list out contents of the database
 def view_command():
     list1.delete(0,END)
     for row in backend.view():
         list1.insert(END,row)
 
+# Function allows user to search for particular details using specified parameters
 def search_command():
     list1.delete(0,END)
     for row in backend.search(name_text.get(), owner_text.get(), kind_text.get(), age_text.get(), arrival_text.get(), departure_text.get(), status_text.get(), comment_text.get()):
         list1.insert(END,row)
 
+# Function allows user to add a new entry to the database
 def add_command():
     backend.insert(name_text.get(), owner_text.get(), kind_text.get(), age_text.get(), arrival_text.get(), departure_text.get(), status_text.get(), comment_text.get())
     list1.delete(0, END)
     list1.insert(END, (name_text.get(), owner_text.get(), kind_text.get(), age_text.get(), arrival_text.get(),departure_text.get(), status_text.get(), comment_text.get()))
 
+# Function allows user to delete a particular record in the database
 def delete_command():
     backend.delete(selected_tuple[0])
 
+# Function allows user to Update record details
 def update_command():
     backend.update(selected_tuple[0],name_text.get(), owner_text.get(), kind_text.get(), age_text.get(), arrival_text.get(), departure_text.get(), status_text.get(), comment_text.get(),)
 
+# The Binding Part
 window = Tk()
-
 window.wm_title("Veterinary Database")
 
+# Input box for CU Operations
 l1 = Label(window,text = "Name")
 l1.grid(row = 0,column = 0)
 
@@ -108,34 +129,35 @@ e8 = Entry(window, textvariable = comment_text)
 e8.grid(row = 3, column = 3)
 
 
-# Other features
-list1=Listbox(window, height = 7, width = 35)
+# The Window for showing entries
+list1 = Listbox(window, height = 7, width = 35)
 list1.grid(row = 4, column = 0, rowspan = 7, columnspan = 2)
 
-sb1=Scrollbar(window)
+# The Scrollbar part
+sb1 = Scrollbar(window)
 sb1.grid(row = 4,column = 2, rowspan = 7)
-
 list1.configure(yscrollcommand = sb1.set)
 sb1.configure(command = list1.yview)
-
 list1.bind('<<ListboxSelect>>', get_selected_row)
 
-b1=Button(window,text="Refresh", width = 12, command = view_command)
+# The Buttons for CRUD and Clearing the entries
+b1 = Button(window,text="Refresh", width = 12, command = view_command)
 b1.grid(row = 4, column = 3)
 
-b2=Button(window,text="Search Pet", width = 12, command = search_command)
+b2 = Button(window,text="Search Pet", width = 12, command = search_command)
 b2.grid(row = 5,column = 3)
 
-b3=Button(window,text="Add Pet", width = 12, command = add_command)
+b3 = Button(window,text="Add Pet", width = 12, command = add_command)
 b3.grid(row = 6, column = 3)
 
-b4=Button(window,text="Update Entry", width = 12, command = update_command)
+b4 = Button(window,text="Update Entry", width = 12, command = update_command)
 b4.grid(row = 7, column = 3)
 
-b5=Button(window,text = "Delete Entry", width = 12, command = delete_command)
+b5 = Button(window,text = "Delete Entry", width = 12, command = delete_command)
 b5.grid(row = 8, column = 3)
 
-b6=Button(window,text = "Close", width = 12, command = window.destroy)
+b6 = Button(window,text = "Clear", width = 12, command = clear_command)
 b6.grid(row = 9, column = 3)
 
-window.mainloop()
+if __name__ == "__main__":
+    window.mainloop()
